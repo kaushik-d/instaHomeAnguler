@@ -12,7 +12,7 @@ require('./models/Users');
 require('./config/passport');
 var routes = require('./routes/index');
 var users = require('./routes/users');
-mongoose.connect('mongodb://localhost/news');
+mongoose.connect('mongodb://'+ process.env.IP + '/news');
 var app = express();
 
 // view engine setup

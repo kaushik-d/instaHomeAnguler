@@ -1,4 +1,4 @@
-var app = angular.module('flapperNews', ['ui.router']);
+var app = angular.module('instahome', ['ui.router']);
 
 app.factory('posts', ['$http', 'auth', function ($http, auth) {
 
@@ -63,11 +63,11 @@ app.factory('auth', ['$http', '$window', function ($http, $window) {
     var auth = {};
 
     auth.saveToken = function (token) {
-        $window.localStorage['flapper-news-token'] = token;
+        $window.localStorage['instahome-token'] = token;
     };
 
     auth.getToken = function () {
-        return $window.localStorage['flapper-news-token'];
+        return $window.localStorage['instahome-token'];
     };
 
     auth.isLoggedIn = function () {
@@ -104,7 +104,7 @@ app.factory('auth', ['$http', '$window', function ($http, $window) {
     };
 
     auth.logOut = function () {
-        $window.localStorage.removeItem('flapper-news-token');
+        $window.localStorage.removeItem('instahome-token');
     };
 
     return auth;
