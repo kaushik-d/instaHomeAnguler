@@ -207,6 +207,16 @@ app.controller('ScheduleCtrl', [
             posts.updatePost( $scope.post);
         };
         
+        $scope.selectEveryDay = function (day) {
+            var i, length = $scope.days.length;
+            for(i = 0;i < length; i++) {
+                if ($scope.post.daysOn.indexOf($scope.days[i]) == -1) {
+                    $scope.post.daysOn.push($scope.days[i]);
+                }
+            }
+            posts.updatePost( $scope.post);
+        };
+        
         $scope.isDayOn = function (day) {
             
             if ($scope.post.daysOn.indexOf(day) == -1) {

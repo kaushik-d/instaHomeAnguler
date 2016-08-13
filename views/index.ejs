@@ -3,6 +3,7 @@
 <head>
     <title>Insta Home</title>
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
     <script src="/javascripts/angularApp.js"></script>
@@ -33,7 +34,8 @@
     </div>
     </div>
 
-    <!-- Start template -->
+<!-- ===================================== Add sprinkler page =========================== -->
+
     <script type="text/ng-template" id="/home.html">
         <div class="page-header">
             <h1>Home</h1>
@@ -78,8 +80,8 @@
             <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a></h3>
         </div>
     </script>
-    <!-- end template -->
-
+    
+<!-- ===================================== Home page =========================== -->
 
     <script type="text/ng-template" id="/post.html">
         <div class="page-header">
@@ -95,7 +97,7 @@
         </form>
         <form ng-submit="updatePost()">
             <div ng-repeat="zone in post.sprinklerZone">
-                <h4>Zone# {{$index}}</h4> 
+                <h4>Zone# {{$index + 1}}</h4> 
                 Duration
                 <input placeholder={{zone.duration}} ng-model=post.sprinklerZone[$index].duration></input>
                 Status
@@ -105,6 +107,8 @@
             <button type="submit" class="btn btn-primary">Update zone</button>
         </form>
     </script>
+    
+<!-- ===================================== Schedule page =========================== -->
     
     <script type="text/ng-template" id="/schedule.html">
         <div class="page-header">
@@ -119,6 +123,7 @@
                 <h3 class="panel-title">Sprinkler runs on</h3>
             </div>
             <div class="panel-body">
+                <button ng-click="selectEveryDay()" class="btn btn-info">Every day</button>
                 <div class="btn-group">
                     <button ng-repeat="day in days" 
                         type="button" 
@@ -126,6 +131,9 @@
                         ng-class="{'btn btn-success' : isDayOn(days[$index]), 'btn btn-default' : !isDayOn(days[$index])}">{{days[$index]}}</button>
                     </button>
                 </div>
+                <button class="btn btn-danger">
+                    <i class="fa fa-lg fa-times" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
         
@@ -134,27 +142,70 @@
                 <h3 class="panel-title">Sprinkler starts</h3>
             </div>
             <div class="panel-body">
-                <form ng-submit="addTime()">
-                    <button type="submit" class="btn btn-primary">Add start time</button>
-                </form>
+                <div class="row">
+                    <div class="col-sm-1">#</div>
+                    <div class="col-sm-5">Starting times</div>
+                    <div class="col-sm-2">
+                        <form ng-submit="addTime()">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-sm-2">
+                        <form ng-submit="toggleEditMode()">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-sm-2">
+                        <form ng-submit="toggleDeleteMode()">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <form ng-submit="updatePost()">
-                    <div ng-repeat="time in post.startTime">
-                        <h4>Start time# {{$index}}</h4>
-                        <input placeholder={{time.startHr}}  maxlength=2 ng-model="post.startTime[$index].startHr"></input>
-                        :
-                        <input placeholder={{time.startMin}} maxlength=2 ng-model="post.startTime[$index].startMin"></input>
-                        <select ng-model="post.startTime[$index].dayTime">
+                <div class="row" ng-repeat="time in post.startTime">
+                    <div class="col-sm-1">
+                        <h4>{{$index+1}}</h4>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder={{time.startHr}}  maxlength=2 ng-model="post.startTime[$index].startHr"></input>
+                            <span class="input-group-addon" id="basic-addon2">:</span>
+                            <input class="form-control" placeholder={{time.startMin}} maxlength=2 ng-model="post.startTime[$index].startMin"></input>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" ng-model="post.startTime[$index].dayTime">
                             <option value="AM">AM</option>
                             <option value="PM">PM</option>
                         </select>
-                        <button ng-click="deleteTime($index)" class="btn btn-danger">Delete</button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update start times</button>
+                    <div class="col-sm-2">
+                        <button ng-click="deleteTime($index)" class="btn btn-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-sm-10">
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
                 </form>
             </div>
         </div>
     </script>
 
+<!-- ===================================== Register page =========================== -->
 
     <script type="text/ng-template" id="/register.html">
         <div class="page-header">
@@ -178,6 +229,7 @@
         </form>
     </script>
 
+<!-- ===================================== Longin page =========================== -->
 
     <script type="text/ng-template" id="/login.html">
         <div class="page-header">
@@ -200,6 +252,8 @@
             <button type="submit" class="btn btn-primary">Log In</button>
         </form>
     </script>
+
+<!-- ===================================== ------- =========================== -->
 
 </body>
 
