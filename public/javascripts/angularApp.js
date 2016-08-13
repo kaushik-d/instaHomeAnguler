@@ -218,6 +218,11 @@ app.controller('ScheduleCtrl', [
             }
             posts.updatePost( $scope.post);
         };
+
+        $scope.clearAllDay = function (day) {
+            $scope.post.daysOn.length = 0;
+            posts.updatePost( $scope.post);
+        };
         
         $scope.isDayOn = function (day) {
             
