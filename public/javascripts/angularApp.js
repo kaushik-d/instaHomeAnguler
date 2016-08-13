@@ -200,10 +200,12 @@ app.controller('ScheduleCtrl', [
         };
         
         $scope.updateDays = function (day) {
-            
-            if ($scope.post.daysOn.indexOf(day) == -1) {
+            var index = $scope.post.daysOn.indexOf(day);
+            if ( index == -1) {
                 $scope.post.daysOn.push(day);
-            };
+            } else {
+                $scope.post.daysOn.splice(index, 1);
+            }
             posts.updatePost( $scope.post);
         };
         
