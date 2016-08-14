@@ -62,7 +62,7 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
 app.factory('weather', ['$http', 'auth', function ($http, auth) {
 
     var w = {
-        forecast: {}
+        forecast: []
     };
 
     w.get = function (zip) {
@@ -71,7 +71,7 @@ app.factory('weather', ['$http', 'auth', function ($http, auth) {
                 Authorization: 'Bearer ' + auth.getToken()
             }
         }).then(function (res) {
-            angular.copy(res.data, w.forecast);
+            angular.copy(res.data.forecast.simpleforecast.forecastday, w.forecast);
         });
     };
 

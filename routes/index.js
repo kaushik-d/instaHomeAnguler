@@ -138,7 +138,7 @@ router.get('/getweather/:zip',
 
         var options = {
             host: 'api.wunderground.com',
-            path: '/api/01e4e6f0fa382cba/forecast/q/' + zip + '.json',
+            path: '/api/01e4e6f0fa382cba/forecast10day/q/' + zip + '.json',
             port: 80
         };
 

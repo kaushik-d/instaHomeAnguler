@@ -1,8 +1,24 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	position: relative;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
-a {
-  color: #00B7FF;
+@media (min-width: 430px) {
+	body {
+		background-image: url("/images/Peace_Corps_UGWork_Flickr.jpg");
+	}
+}
+
+.panel-transparent {
+        background: none;
+}
+
+.panel-transparent .panel-heading{
+    background: rgba(122, 130, 136, 0.2)!important;
+}
+
+.panel-transparent .panel-body{
+    background: rgba(46, 51, 56, 0.2)!important;
 }

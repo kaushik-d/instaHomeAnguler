@@ -8,6 +8,8 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
     <script src="/javascripts/angularApp.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="/stylesheets/weather-icons.min.css" rel="stylesheet" type="text/css">
+    <link href="stylesheets/style.css" rel="stylesheet" type="text/css">
     <style>
         .glyphicon-thumbs-up {
             cursor: pointer
@@ -42,24 +44,50 @@
             <h1>Home</h1>
         </div>
         <div ng-show="isLoggedIn()" ng-repeat="post in posts">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Sprinkler # {{$index}}</h3>
+            <div class="panel panel-default panel-transparent">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">Sprinkler # {{$index}}</h3>
+                    <h3 class="panel-title pull-right">{{post.city}}, {{post.state}}</h3>
                 </div>
                 <div class="panel-body">
-                    <img src={{weather.forecast.simpleforecast.forecastday[0].icon_url}} alt="Smiley face" width="42" height="42">
-                    <h5>{{weather.forecast.simpleforecast.forecastday[0].high.celsius}} C / 
-                        {{weather.forecast.simpleforecast.forecastday[0].low.celsius}} C</h5>
-                    <h5>{{weather.forecast.simpleforecast.forecastday[0].conditions}}</h5>
-                    {{post.zip}}<br>
-                    <a class="btn btn-primary" href="#/post/{{post._id}}">Edit</a>
-                    <a class="btn btn-success" href="/#/schedule/{{post._id}}">Schedule</a>
-                    <button ng-click="deletePost(post)" class="btn btn-danger">Delete</button>
+                    <div class="row">
+                        <div class="col-sm-2" style="margin: 9px; text-align: center; border: 1px solid lightgray; border-radius: 5px;" ng-repeat="iday in [1,2,3,4,5]">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h5>{{weather[$index].date.weekday_short}}</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- <img src={{weather[$index].icon_url}} width="42" height="42"> -->
+                                    <i class="wi wi-wu-{{weather[$index].icon}}" style="font-size:30px"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {{weather[$index].high.celsius}}<i class="wi wi-celsius" style="font-size:14px"></i> /
+                                    {{weather[$index].low.celsius}}<i class="wi wi-celsius" style="font-size:14px"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <i class="wi wi-raindrop" style="font-size:12px"> {{weather[$index].qpf_allday.in}} in</i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" style="text-align:center">
+                            <a class="btn btn-primary" href="#/post/{{post._id}}">Zones</a>
+                            <a class="btn btn-success" href="/#/schedule/{{post._id}}">Schedule</a>
+                            <button ng-click="deletePost(post)" class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="panel panel-default">
+        <div class="panel panel-default panel-transparent">
             <div class="panel-heading">
                 <h3 class="panel-title">Add a sprinkler</h3>
             </div>
