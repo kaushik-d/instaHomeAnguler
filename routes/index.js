@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var http = require('http');
 
 var passport = require('passport');
 var mongoose = require('mongoose');
@@ -127,6 +128,34 @@ router.delete('/post/:postid',
                 }
             );
         });
+    }
+);
+
+router.get('/getweather/:zip',
+    auth,
+    function (req, res) {
+        var zip = req.params.zip;
+
+        var options = {
+            host: 'api.wunderground.com',
+            path: '/api/01e4e6f0fa382cba/forecast/q/' + zip + '.json',
+            port: 80
+        };
+
+        var httpreq = http.request(options, function (response) {
+            var str = '';
+    
+            response.on('data', function (chunk) {
+                str += chunk;
+            });
+
+            response.on('end', function() {
+                res.send(str);
+            })
+
+        });
+  
+        httpreq.end();
     }
 );
 

@@ -59,6 +59,25 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
     return o;
 }]);
 
+app.factory('weather', ['$http', 'auth', function ($http, auth) {
+
+    var w = {
+        forecast: {}
+    };
+
+    w.get = function (zip) {
+        return $http.get('/getweather/' + zip, {
+            headers: {
+                Authorization: 'Bearer ' + auth.getToken()
+            }
+        }).then(function (res) {
+            angular.copy(res.data, w.forecast);
+        });
+    };
+
+    return w;
+}]);
+
 app.factory('auth', ['$http', '$window', function ($http, $window) {
     var auth = {};
 
@@ -114,8 +133,11 @@ app.controller('MainCtrl', [
 	'$scope',
 	'posts',
     'auth',
-	function ($scope, posts, auth) {
+    'weather',
+	function ($scope, posts, auth, weather) {
         
+        weather.get('02920');
+        $scope.weather = weather.forecast;
         $scope.test = 'Hello world!';
         posts.getByAuthor();
         $scope.posts = posts.posts;
