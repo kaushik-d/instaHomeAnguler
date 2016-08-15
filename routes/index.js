@@ -151,7 +151,7 @@ router.get('/getweather/:zip',
 
             response.on('end', function() {
                 res.send(str);
-            })
+            });
 
         });
   

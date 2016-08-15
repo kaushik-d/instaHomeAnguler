@@ -16,6 +16,8 @@ var PostSchema = new mongoose.Schema({
     
     daysOn: [String],
     
+    forecast10days: {},
+    
     startTime: [{
         startHr: {
             type: Number,
