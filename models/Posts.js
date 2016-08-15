@@ -42,7 +42,10 @@ var PostSchema = new mongoose.Schema({
             min: 0,
             max: 60
         },
-        status: Boolean
+        status: {
+            type: String,
+            default: "AUTO"
+        }
     }]
 });
 

@@ -60,7 +60,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <!-- <img src={{weather[$index].icon_url}} width="42" height="42"> -->
-                                    <i class="wi wi-wu-{{weather[$index].icon}}" style="font-size:30px"></i>
+                                    <i class="wi wi-wu-{{weather[$index].icon}}" style="font-size:30px; padding: 10px"></i>
                                 </div>
                             </div>
                             <div class="row">
@@ -71,7 +71,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <i class="wi wi-raindrop" style="font-size:12px"> {{weather[$index].qpf_allday.in}} in</i>
+                                    <i class="wi wi-raindrop" style="font-size:14px"> {{weather[$index].qpf_allday.in}}</i>
                                 </div>
                             </div>
                         </div>
@@ -134,13 +134,21 @@
             </div>
             <div class="panel-body">
                 <div class="row" ng-repeat="zone in post.sprinklerZone">
-                    <div class="col-sm-10">
+                    <div class="col-sm-6">
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon2">{{$index+1}}</span>
                             <input class="form-control" placeholder={{zone.duration}} ng-model=post.sprinklerZone[$index].duration></input>
                             <span class="input-group-addon" id="basic-addon2"> minutes </span>
-                            <input class="form-control" placeholder={{zone.status}} ng-model=post.sprinklerZone[$index].status></input>
+                            <!-- <input class="form-control" placeholder={{zone.status}} ng-model=post.sprinklerZone[$index].status></input> -->
                         </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <span style="vertical-align:top" ng-class="{'textOn' : !isOn($index), 'textOff' : isOn($index)}">AUTO</span>
+                        <label class="switch">
+                            <input type="checkbox" ng-model=post.sprinklerZone[$index].status ng-true-value="'ON'"  ng-false-value="'AUTO'" ngChecked="isOn($index)">
+                            <div class="slider round"></div>
+                        </label>
+                        <span style="vertical-align:top" ng-class="{'textOn' : isOn($index), 'textOff' : !isOn($index)}">ON</span>
                     </div>
                     <div class="col-sm-2">
                         <button ng-click="deleteZone($index)" class="btn btn-danger">Delete</button>

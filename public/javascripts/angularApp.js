@@ -187,13 +187,17 @@ app.controller('PostsCtrl', [
         };
         
         $scope.addZone = function () {
-            $scope.post.sprinklerZone.push({duration: '0', status: 'false'});
+            $scope.post.sprinklerZone.push({duration: '0', status: "AUTO"});
             posts.updatePost( $scope.post);
         };
         
         $scope.deleteZone = function (index) {
             $scope.post.sprinklerZone.splice(index,1);
             posts.updatePost( $scope.post);
+        };
+
+        $scope.isOn = function (index) {
+            return post.sprinklerZone[index].status == "ON";
         };
         
         $scope.deletePost = function (post) {
