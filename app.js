@@ -10,6 +10,9 @@ require('./models/Posts');
 require('./models/Comments');
 require('./models/Users');
 require('./config/passport');
+
+require('./services/scheduledServices.js');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 mongoose.connect('mongodb://'+ process.env.IP + '/news');
