@@ -44,6 +44,26 @@ schedule.scheduleJob(rule, function(){
                     //console.log("Got forecast for " + post.zip);
                     
                     post.forecast10days = str;
+                    
+                    var forecast = JSON.parse(str);
+                    
+                    var update = {
+                        $set: {forecast10days : forecast.forecast.simpleforecast.forecastday}
+                    };
+
+                    var options = {
+                        safe: true,
+                        upsert: false,
+                        new: true
+                    };
+
+                    var postid = post._id;
+
+                    Post.findByIdAndUpdate(postid, update, options, function (err, post) {
+                        if (err) {
+                            console.error("Error error in saying weather" + err);
+                        }
+                    });
                 });
 
             });
