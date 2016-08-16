@@ -51,29 +51,37 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-sm-2" style="margin: 9px; text-align: center; border: 1px solid lightgray; border-radius: 5px;" ng-repeat="iday in [1,2,3,4,5]">
+                        <div class="col-sm-2" style="margin: 9px; text-align: center; border: 1px solid lightgray; border-radius: 5px;" 
+                        ng-repeat="iday in [1,2,3,4,5]">
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <h5>{{weather[$index].date.weekday_short}}</h5>
+                                    <h5>{{post.forecast10days[$index].date.weekday_short}}</h5>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <!-- <img src={{weather[$index].icon_url}} width="42" height="42"> -->
-                                    <i class="wi wi-wu-{{weather[$index].icon}}" style="font-size:30px; padding: 10px"></i>
+                                    <!-- <img src={{post.forecast10days[$index].icon_url}} width="42" height="42"> -->
+                                    <i class="wi wi-wu-{{post.forecast10days[$index].icon}}" style="font-size:30px; padding: 10px"></i>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    {{weather[$index].high.celsius}}<i class="wi wi-celsius" style="font-size:14px"></i> /
-                                    {{weather[$index].low.celsius}}<i class="wi wi-celsius" style="font-size:14px"></i>
+                                    {{post.forecast10days[$index].high.celsius}}<i class="wi wi-celsius" style="font-size:14px"></i> /
+                                    {{post.forecast10days[$index].low.celsius}}<i class="wi wi-celsius" style="font-size:14px"></i>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <i class="wi wi-raindrop" style="font-size:14px"> {{weather[$index].qpf_allday.in}}</i>
+                                    <i class="wi wi-raindrop" style="font-size:14px"> {{post.forecast10days[$index].qpf_allday.in}}</i>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" style="text-align:left">
+                            <p class="list-group-item-text">
+                                <i class="fa fa-info" aria-hidden="true"> Forcast updated: {{post.forecastUpdateTime}}</i>
+                            </p>
                         </div>
                     </div>
                     <div class="row">
@@ -87,7 +95,7 @@
             </div>
         </div>
         
-        <div class="panel panel-default panel-transparent">
+        <div class="panel panel-default panel-transparent" ng-show="showAddPost()">
             <div class="panel-heading">
                 <h3 class="panel-title">Add a sprinkler</h3>
             </div>

@@ -143,6 +143,13 @@ app.controller('MainCtrl', [
         $scope.posts = posts.posts;
         //$scope.posts.getAll();
         $scope.isLoggedIn = auth.isLoggedIn;
+        
+        $scope.showAddPost = function() {
+            if($scope.isLoggedIn() && $scope.posts.length == 0) {
+                return true;
+            }
+            return false;
+        };
 
         $scope.addPost = function () {
             if (!$scope.zip) {

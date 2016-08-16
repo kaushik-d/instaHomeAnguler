@@ -41,14 +41,14 @@ schedule.scheduleJob(rule, function(){
                 response.on('end', function() {
                     
                     console.log("Got forecast for " + zip);
-                    //console.log("Got forecast for " + post.zip);
-                    
-                    post.forecast10days = str;
                     
                     var forecast = JSON.parse(str);
-                    
+                    var d = new Date();
                     var update = {
-                        $set: {forecast10days : forecast.forecast.simpleforecast.forecastday}
+                        $set: {
+                            forecast10days : forecast.forecast.simpleforecast.forecastday,
+                            forecastUpdateTime: d.toLocaleString()
+                        }
                     };
 
                     var options = {
