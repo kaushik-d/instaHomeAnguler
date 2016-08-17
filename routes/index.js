@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var http = require('http');
 
+var WeatherService = require('../services/weatherService.js');
 var passport = require('passport');
 var mongoose = require('mongoose');
 
@@ -41,14 +42,21 @@ router.post('/posts',
     function (req, res, next) {
         var post = new Post(req.body);
         post.author = req.payload.username;
-        post.save(
-            function (err, post) {
+        
+        
+        WeatherService.getForecast(post.zip,function(forecast) {
+            
+            post.forecast10days = forecast.forecast.simpleforecast.forecastday;
+            var d = new Date();
+            post.forecastUpdateTime = d.toLocaleString();
+            post.save(function (err, post) {
                 if (err) {
                     return next(err);
                 }
 
                 res.json(post);
             });
+        });
     }
 );
 
