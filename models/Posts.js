@@ -49,8 +49,25 @@ var PostSchema = new mongoose.Schema({
         status: {
             type: String,
             default: "AUTO"
-        }
+        },
+        lastRunStartTime: {}
     }]
+});
+
+PostSchema.pre('findOneAndUpdate', function(next) {
+    
+    console.log("Setting to");
+    console.log(this._update.$set.sprinklerZone[0].status);
+    next();
+});
+
+PostSchema.post('findOneAndUpdate', function(doc) {
+    
+    //console.log(this);
+    console.log(doc.sprinklerZone[0].status);
+    console.log(this._update.$set.sprinklerZone[0].status);
+    setTimeout(function(){ console.log("Hello"); }, 3000);
+    console.log("timeout set");
 });
 
 mongoose.model('Post', PostSchema);

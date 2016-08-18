@@ -81,6 +81,8 @@ router.post('/updatepost',
         Post.findByIdAndUpdate(postid, update, options, function (err, post) {
             if (err) {
                 return next(err);
+            } else {
+                return res.json(post);
             }
         });
 

@@ -189,6 +189,8 @@ app.controller('PostsCtrl', [
        // $scope.post = $stateParams.post;
         $scope.isLoggedIn = auth.isLoggedIn;
         
+        $scope.timeRemaining = [];
+        
         $scope.updatePost = function () {
             posts.updatePost( $scope.post);
         };
@@ -209,6 +211,35 @@ app.controller('PostsCtrl', [
         
         $scope.deletePost = function (post) {
             posts.delete(post);
+        };
+        
+        $scope.handleStatusChange = function (index) {
+            
+            $scope.timeRemaining[index] = 0;
+            var currentStatus = post.sprinklerZone[index].status;
+            post.sprinklerZone[index].lastRunStartTime = new Date();
+            posts.updatePost( $scope.post);
+            
+            if(currentStatus == "ON") {
+                var timer = parseInt(post.sprinklerZone[index].duration,10);
+                var minutes, seconds;
+                
+                var intv = setInterval(function(index) { return function () {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+    
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+                    
+                    $scope.timeRemaining[index] = minutes + ":" + seconds;
+                    $scope.$apply()
+                    console.log(index);
+                    console.log($scope.timeRemaining[index]);
+                    if(--timer < 0) {
+        	            clearInterval(intv);
+                    }
+                }}(index), 1000);
+            }
         };
 	}
 ]);
@@ -278,6 +309,7 @@ app.controller('ScheduleCtrl', [
         $scope.deletePost = function (post) {
             posts.delete(post);
         };
+        
 	}
 ]);
 

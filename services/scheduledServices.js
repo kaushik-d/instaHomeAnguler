@@ -7,7 +7,7 @@ var rule = new schedule.RecurrenceRule();
 
 var WeatherService = require('./weatherService.js');
 
-rule.minute = new schedule.Range(0, 59, 1);
+rule.hour = new schedule.Range(0, 23, 12);
 
 schedule.scheduleJob(rule, function(){
     

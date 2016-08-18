@@ -153,10 +153,12 @@
                     <div class="col-sm-4">
                         <span style="vertical-align:top" ng-class="{'textOn' : !isOn($index), 'textOff' : isOn($index)}">AUTO</span>
                         <label class="switch">
-                            <input type="checkbox" ng-model=post.sprinklerZone[$index].status ng-true-value="'ON'"  ng-false-value="'AUTO'" ngChecked="isOn($index)">
+                            <input type="checkbox" ng-model=post.sprinklerZone[$index].status ng-true-value="'ON'"  
+                                ng-false-value="'AUTO'" ng-Checked="isOn($index)" ng-Change="handleStatusChange($index)">
                             <div class="slider round"></div>
                         </label>
                         <span style="vertical-align:top" ng-class="{'textOn' : isOn($index), 'textOff' : !isOn($index)}">ON</span>
+                        <span style="vertical-align:top" ng-show="isOn($index)">R:{{timeRemaining[$index]}}</span>
                     </div>
                     <div class="col-sm-2">
                         <button ng-click="deleteZone($index)" class="btn btn-danger">Delete</button>
