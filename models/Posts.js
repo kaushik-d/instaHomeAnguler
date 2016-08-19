@@ -54,20 +54,43 @@ var PostSchema = new mongoose.Schema({
     }]
 });
 
+PostSchema.methods.setStatusToAuto  = function(i,callback) {
+    this.sprinklerZone[i].status = "AUTO";
+    this.save(callback);
+};
+
 PostSchema.pre('findOneAndUpdate', function(next) {
     
-    console.log("Setting to");
-    console.log(this._update.$set.sprinklerZone[0].status);
+    //console.log("Setting to");
+    //console.log(this._update.$set.sprinklerZone[0].status);
     next();
 });
 
 PostSchema.post('findOneAndUpdate', function(doc) {
     
     //console.log(this);
-    console.log(doc.sprinklerZone[0].status);
-    console.log(this._update.$set.sprinklerZone[0].status);
-    setTimeout(function(){ console.log("Hello"); }, 3000);
-    console.log("timeout set");
+    //console.log(doc.sprinklerZone[0].status);
+    //console.log(this._update.$set.sprinklerZone[0].status);
+    var i = 0;
+    for(i = 0; i < doc.sprinklerZone.length; i++) {
+        if(doc.sprinklerZone[i].status == "ON") {
+            var duration = doc.sprinklerZone[i].duration;
+            console.log("Setting time out for"+ duration*1000); 
+            setTimeout(function(i,doc) { return function(){ 
+                
+                console.log("Setting"+ i + "th status to AUTO"); 
+                doc.setStatusToAuto(i, function(err,doc) {
+                    if(err) {
+                        console.log("Save failed");
+                    } else {
+                        console.log("Done save");
+                    }
+                });
+            }}(i,doc), duration*1000);
+        }
+    }
+    //setTimeout(function(){ console.log("Hello"); }, 3000);
+    //console.log("timeout set");
 });
 
 mongoose.model('Post', PostSchema);
