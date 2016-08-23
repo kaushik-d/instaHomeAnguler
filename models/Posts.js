@@ -76,7 +76,7 @@ PostSchema.post('findOneAndUpdate', function(doc) {
         if(doc.sprinklerZone[i].status == "ON") {
             var duration = doc.sprinklerZone[i].duration;
             console.log("Setting time out for"+ duration*1000); 
-            setTimeout(function(i,doc) { return function(){ 
+            setTimeout(function(i,doc) { return function(){
                 
                 console.log("Setting"+ i + "th status to AUTO"); 
                 doc.setStatusToAuto(i, function(err,doc) {

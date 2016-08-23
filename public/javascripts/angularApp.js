@@ -23,6 +23,7 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
             }
         }).success(function (data) {
             //o.posts.push(data);
+            //angular.copy(data, o.posts);
         });
     };
 
@@ -217,30 +218,50 @@ app.controller('PostsCtrl', [
             
             $scope.timeRemaining[index] = 0;
             var currentStatus = post.sprinklerZone[index].status;
-            post.sprinklerZone[index].lastRunStartTime = new Date();
+            var date = new Date();
+            post.sprinklerZone[index].lastRunStartTime = date.toISOString();
             posts.updatePost( $scope.post);
             
-            if(currentStatus == "ON") {
-                var timer = parseInt(post.sprinklerZone[index].duration,10);
-                var minutes, seconds;
-                
-                var intv = setInterval(function(index) { return function () {
-                    minutes = parseInt(timer / 60, 10);
-                    seconds = parseInt(timer % 60, 10);
-    
-                    minutes = minutes < 10 ? "0" + minutes : minutes;
-                    seconds = seconds < 10 ? "0" + seconds : seconds;
-                    
-                    $scope.timeRemaining[index] = minutes + ":" + seconds;
-                    $scope.$apply()
-                    console.log(index);
-                    console.log($scope.timeRemaining[index]);
-                    if(--timer < 0) {
-        	            clearInterval(intv);
-                    }
-                }}(index), 1000);
-            }
         };
+        
+        $scope.$watch('post.sprinklerZone', function() {
+            
+            for( var index = 0; index < $scope.post.sprinklerZone.length; index++)
+            {
+                var currentStatus = $scope.post.sprinklerZone[index].status;
+            
+                if(currentStatus == "ON") {
+                
+                    var lastRunStartTime = $scope.post.sprinklerZone[index].lastRunStartTime;
+                    var lastDate = new Date(lastRunStartTime);
+                    var currentTime = new Date();
+                    
+                    var currentTms = currentTime.getTime();
+                    var startTms = lastDate.getTime();
+                    
+                    var timer =parseInt($scope.post.sprinklerZone[index].duration,10) - (currentTms - startTms)/1000;
+                    var minutes, seconds;
+                    var intv = setInterval(function(index) { return function () {
+                        
+                        minutes = parseInt(timer / 60, 10);
+                        seconds = parseInt(timer % 60, 10);
+    
+                        minutes = minutes < 10 ? "0" + minutes : minutes;
+                        seconds = seconds < 10 ? "0" + seconds : seconds;
+                    
+                        $scope.timeRemaining[index] = minutes + ":" + seconds;
+                        $scope.$apply();
+                        
+                        console.log(index);
+                        console.log($scope.timeRemaining[index]);
+                        
+                        if(--timer < 0) {
+        	                clearInterval(intv);
+                        }
+                    }}(index), 1000);
+                }
+            }
+        },true);
 	}
 ]);
 
