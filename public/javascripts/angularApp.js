@@ -52,8 +52,9 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
             headers: {
                 Authorization: 'Bearer ' + auth.getToken()
             }
-        }).success(function (data) {
-            angular.copy(data, o.posts);
+        }).then(function (res) {
+            //angular.copy(data, o.posts);
+            return res.data;
         });
     };
 
@@ -140,7 +141,9 @@ app.controller('MainCtrl', [
         weather.get('02920');
         $scope.weather = weather.forecast;
         $scope.test = 'Hello world!';
-        posts.getByAuthor();
+        posts.getByAuthor().then(function(post) {
+            $scope.posts = post;
+        });
         $scope.posts = posts.posts;
         //$scope.posts.getAll();
         $scope.isLoggedIn = auth.isLoggedIn;
@@ -224,41 +227,54 @@ app.controller('PostsCtrl', [
             
         };
         
-        $scope.$watch('post.sprinklerZone', function() {
+        $scope.intervals = [];
+        
+        $scope.$watch('post.sprinklerZone', function(newsprinklerZone, oldsprinklerZone, scope) {
             
-            for( var index = 0; index < $scope.post.sprinklerZone.length; index++)
+            //if(angular.equals(newsprinklerZone,oldsprinklerZone)) {
+            //    return;
+            //}
+            
+            for( var index = 0; index < scope.post.sprinklerZone.length; index++)
             {
-                var currentStatus = $scope.post.sprinklerZone[index].status;
+                var currentStatus = scope.post.sprinklerZone[index].status;
             
                 if(currentStatus == "ON") {
                 
-                    var lastRunStartTime = $scope.post.sprinklerZone[index].lastRunStartTime;
+                    var lastRunStartTime = scope.post.sprinklerZone[index].lastRunStartTime;
                     var lastDate = new Date(lastRunStartTime);
                     var currentTime = new Date();
                     
                     var currentTms = currentTime.getTime();
                     var startTms = lastDate.getTime();
+                    var durationCurr = scope.post.sprinklerZone[index].duration*60;
                     
-                    var timer =parseInt($scope.post.sprinklerZone[index].duration,10) - (currentTms - startTms)/1000;
-                    var minutes, seconds;
-                    var intv = setInterval(function(index) { return function () {
+                    var timer =parseInt(durationCurr,10) - (currentTms - startTms)/1000;
+                    
+                    clearInterval(scope.intervals[index]);
+                    
+                    scope.intervals[index] = setInterval(function(index, timer) { return function () {
                         
-                        minutes = parseInt(timer / 60, 10);
-                        seconds = parseInt(timer % 60, 10);
+                        var minutes = parseInt(timer / 60, 10);
+                        var seconds = parseInt(timer % 60, 10);
     
                         minutes = minutes < 10 ? "0" + minutes : minutes;
                         seconds = seconds < 10 ? "0" + seconds : seconds;
                     
-                        $scope.timeRemaining[index] = minutes + ":" + seconds;
-                        $scope.$apply();
+                        scope.timeRemaining[index] = minutes + ":" + seconds;
+                        scope.$apply();
                         
                         console.log(index);
-                        console.log($scope.timeRemaining[index]);
+                        console.log(scope.timeRemaining[index]);
                         
-                        if(--timer < 0) {
-        	                clearInterval(intv);
+                        if(--timer < -10) {
+        	                clearInterval(scope.intervals[index]);
+        	                posts.getByAuthor().then(function(post) {
+                                scope.post = post[0];
+                                scope.$apply();
+                            });
                         }
-                    }}(index), 1000);
+                    }}(index, timer), 1000);
                 }
             }
         },true);

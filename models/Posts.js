@@ -74,19 +74,19 @@ PostSchema.post('findOneAndUpdate', function(doc) {
     var i = 0;
     for(i = 0; i < doc.sprinklerZone.length; i++) {
         if(doc.sprinklerZone[i].status == "ON") {
-            var duration = doc.sprinklerZone[i].duration;
-            console.log("Setting time out for"+ duration*1000); 
+            var duration = doc.sprinklerZone[i].duration*60*1000;
+            console.log("Setting time out for"+ duration); 
             setTimeout(function(i,doc) { return function(){
                 
                 console.log("Setting"+ i + "th status to AUTO"); 
                 doc.setStatusToAuto(i, function(err,doc) {
                     if(err) {
-                        console.log("Save failed");
+                        console.log("Save failed"+ err.toString());
                     } else {
                         console.log("Done save");
                     }
                 });
-            }}(i,doc), duration*1000);
+            }}(i,doc), duration);
         }
     }
     //setTimeout(function(){ console.log("Hello"); }, 3000);
