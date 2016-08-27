@@ -108,6 +108,16 @@ router.param('post',
     }
 );
 
+router.get('/getstatus/:post',
+    function (req, res, next) {
+        var status = [];
+        for(var i = 0; i < req.post.sprinklerZone.length; i++) {
+            status[i] = req.post.sprinklerZone[i].status;
+        }
+        res.json(status);
+    }
+);
+
 router.get('/post/:post',
     auth,
     function (req, res, next) {

@@ -60,7 +60,7 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
 
     return o;
 }]);
-
+/*
 app.factory('weather', ['$http', 'auth', function ($http, auth) {
 
     var w = {
@@ -79,7 +79,7 @@ app.factory('weather', ['$http', 'auth', function ($http, auth) {
 
     return w;
 }]);
-
+*/
 app.factory('auth', ['$http', '$window', function ($http, $window) {
     var auth = {};
 
@@ -135,11 +135,12 @@ app.controller('MainCtrl', [
 	'$scope',
 	'posts',
     'auth',
-    'weather',
-	function ($scope, posts, auth, weather) {
+    //'weather',
+//	function ($scope, posts, auth, weather) {
+	function ($scope, posts, auth) {
         
-        weather.get('02920');
-        $scope.weather = weather.forecast;
+        //weather.get('02920');
+        //$scope.weather = weather.forecast;
         $scope.test = 'Hello world!';
         posts.getByAuthor().then(function(post) {
             $scope.posts = post;
@@ -183,11 +184,11 @@ app.controller('MainCtrl', [
 
 app.controller('PostsCtrl', [
 	'$scope',
+	'$interval',
 	'posts',
     'post',
     'auth',
-	//function ($scope, posts, post, auth) {
-    function ($scope, posts, post, auth) {
+    function ($scope, $interval, posts, post, auth) {
 
         $scope.post = post;
        // $scope.post = $stateParams.post;
@@ -210,7 +211,7 @@ app.controller('PostsCtrl', [
         };
 
         $scope.isOn = function (index) {
-            return post.sprinklerZone[index].status == "ON";
+            return $scope.post.sprinklerZone[index].status == "ON";
         };
         
         $scope.deletePost = function (post) {
@@ -220,11 +221,9 @@ app.controller('PostsCtrl', [
         $scope.handleStatusChange = function (index) {
             
             $scope.timeRemaining[index] = 0;
-            var currentStatus = post.sprinklerZone[index].status;
             var date = new Date();
-            post.sprinklerZone[index].lastRunStartTime = date.toISOString();
+            $scope.post.sprinklerZone[index].lastRunStartTime = date.toISOString();
             posts.updatePost( $scope.post);
-            
         };
         
         $scope.intervals = [];
@@ -234,6 +233,11 @@ app.controller('PostsCtrl', [
             //if(angular.equals(newsprinklerZone,oldsprinklerZone)) {
             //    return;
             //}
+            
+            for(var j = 0; j < scope.intervals.length; j++) {
+                $interval.cancel(scope.intervals[j]);
+            }
+            scope.intervals.length = 0;
             
             for( var index = 0; index < scope.post.sprinklerZone.length; index++)
             {
@@ -251,30 +255,28 @@ app.controller('PostsCtrl', [
                     
                     var timer =parseInt(durationCurr,10) - (currentTms - startTms)/1000;
                     
-                    clearInterval(scope.intervals[index]);
-                    
-                    scope.intervals[index] = setInterval(function(index, timer) { return function () {
+                    scope.intervals[index] = $interval(function(index, timer) { return function () {
                         
                         var minutes = parseInt(timer / 60, 10);
                         var seconds = parseInt(timer % 60, 10);
     
-                        minutes = minutes < 10 ? "0" + minutes : minutes;
-                        seconds = seconds < 10 ? "0" + seconds : seconds;
+                        minutes = (minutes < 10 && minutes >= 0) ? "0" + minutes : minutes;
+                        seconds = (seconds < 10 && seconds >= 0) ? "0" + seconds : seconds;
                     
                         scope.timeRemaining[index] = minutes + ":" + seconds;
-                        scope.$apply();
+                        //scope.$apply();
                         
                         console.log(index);
                         console.log(scope.timeRemaining[index]);
                         
-                        if(--timer < -10) {
-        	                clearInterval(scope.intervals[index]);
+                        if(--timer < -2) {
         	                posts.getByAuthor().then(function(post) {
                                 scope.post = post[0];
-                                scope.$apply();
+                                //scope.$apply();
                             });
+                            $interval.cancel(scope.intervals[index]);
                         }
-                    }}(index, timer), 1000);
+                    }}(index, timer), 1000,1200,true);
                 }
             }
         },true);
@@ -329,7 +331,7 @@ app.controller('ScheduleCtrl', [
             
             if ($scope.post.daysOn.indexOf(day) == -1) {
                 return false;
-            };
+            }
             return true;
         };
         
