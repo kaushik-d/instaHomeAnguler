@@ -3,6 +3,7 @@ var router = express.Router();
 var http = require('http');
 
 var WeatherService = require('../services/weatherService.js');
+var MachineStatusService = require('../services/machineStatusService.js');
 var passport = require('passport');
 var mongoose = require('mongoose');
 
@@ -110,11 +111,8 @@ router.param('post',
 
 router.get('/getstatus/:post',
     function (req, res, next) {
-        var status = [];
-        for(var i = 0; i < req.post.sprinklerZone.length; i++) {
-            status[i] = req.post.sprinklerZone[i].status;
-        }
-        res.json(status);
+        
+        res.json(MachineStatusService.getStatus(req.post));
     }
 );
 
@@ -201,7 +199,7 @@ router.post('/register',
 
                 return res.json({
                     token: user.generateJWT()
-                })
+                });
             }
         );
     }

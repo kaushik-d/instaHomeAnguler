@@ -1,4 +1,4 @@
-var app = angular.module('instahome', ['ui.router']);
+var app = angular.module('instahome', ['ui.router','easypiechart','ui.bootstrap']);
 
 app.factory('posts', ['$http', 'auth', function ($http, auth) {
 
@@ -226,6 +226,22 @@ app.controller('PostsCtrl', [
             posts.updatePost( $scope.post);
         };
         
+        $scope.percent = [];
+        $scope.percent.length = $scope.post.sprinklerZone.length;
+        
+        /*
+        $scope.options = {
+            animate:{
+                duration:0,
+                enabled:false
+            },
+            barColor:'#2C3E50',
+            scaleColor:false,
+            lineWidth:20,
+            lineCap:'circle'
+        }; 
+        */
+        
         $scope.intervals = [];
         
         $scope.$watch('post.sprinklerZone', function(newsprinklerZone, oldsprinklerZone, scope) {
@@ -264,7 +280,7 @@ app.controller('PostsCtrl', [
                         seconds = (seconds < 10 && seconds >= 0) ? "0" + seconds : seconds;
                     
                         scope.timeRemaining[index] = minutes + ":" + seconds;
-                        //scope.$apply();
+                        scope.percent[index] = 100*timer/durationCurr;
                         
                         console.log(index);
                         console.log(scope.timeRemaining[index]);
@@ -292,11 +308,30 @@ app.controller('ScheduleCtrl', [
     function ($scope, posts, post, auth) {
 
         $scope.post = post;
-       // $scope.post = $stateParams.post;
+       
+        $scope.selectedTimes = (function() {
+            var now = new Date();
+            var timeArr = [];
+            var hr = 0;
+            for(var i = 0; i < $scope.post.startTime.length; i++) {
+                hr = $scope.post.startTime[i].dayTime == "AM" ? $scope.post.startTime[i].startHr : $scope.post.startTime[i].startHr + 12;
+                timeArr[i] = new Date(now.getYear(), now.getMonth(), now.getDate(), 
+                    hr, $scope.post.startTime[i].startMin,
+                    0,0);
+            }
+            return timeArr;
+        } ());
         
         $scope.days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
         
         $scope.isLoggedIn = auth.isLoggedIn;
+        
+        $scope.selectTime = function(index) {
+            var hr = parseInt($scope.selectedTimes[index].getHours(),10);
+            $scope.post.startTime[index].startHr =  hr > 12 ? hr - 12 : hr ;
+            $scope.post.startTime[index].startMin = parseInt($scope.selectedTimes[index].getMinutes(),10);
+            $scope.post.startTime[index].dayTime =  hr > 12 ? "PM" : "AM";
+        };
         
         $scope.updatePost = function () {
             posts.updatePost( $scope.post);

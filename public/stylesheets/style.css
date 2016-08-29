@@ -95,3 +95,9 @@ input:checked + .slider:before {
   color: gray;
   font-weight:bold; 
 }
+
+.pull-middle {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
