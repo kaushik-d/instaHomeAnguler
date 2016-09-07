@@ -1,4 +1,4 @@
-var app = angular.module('instahome', ['ui.router','easypiechart','ui.bootstrap']);
+var app = angular.module('instahome', ['ui.router','easypiechart','ui.bootstrap','ngAutocomplete']);
 
 app.factory('posts', ['$http', 'auth', function ($http, auth) {
 
@@ -141,7 +141,9 @@ app.controller('MainCtrl', [
         
         //weather.get('02920');
         //$scope.weather = weather.forecast;
-        $scope.test = 'Hello world!';
+        $scope.autocomplete = "";
+        $scope.addressDetails = ""
+        
         posts.getByAuthor().then(function(post) {
             $scope.posts = post;
         });
@@ -179,6 +181,55 @@ app.controller('MainCtrl', [
         $scope.deletePost = function (post) {
             posts.delete(post);
         };
+        
+        
+        $scope.$watch('addressDetails', function(newValue, oldValue, scope) {
+            if(!angular.equals(newValue,oldValue)) {
+                scope.zip = "";
+                scope.country = "";
+                scope.city = "";
+                scope.state = "";
+                scope.address = "";
+                for(var i = 0; i < scope.addressDetails.address_components.length; i++) {
+                    var type = scope.addressDetails.address_components[i].types[0];
+                    if(type == "postal_code") {
+                        scope.zip = scope.addressDetails.address_components[i].short_name;
+                    } else if (type == "country") {
+                        scope.country = scope.addressDetails.address_components[i].short_name;
+                    } else if (type == "locality") {
+                        scope.city = scope.addressDetails.address_components[i].short_name;
+                    } else if (type == "administrative_area_level_1") {
+                        scope.state = scope.addressDetails.address_components[i].short_name;
+                    } else if (type == "route") {
+                        scope.address = scope.addressDetails.address_components[i].short_name;
+                    }
+                }
+            }
+        },true);
+        
+        /*
+        $scope.addressChange = function() {
+            $scope.zip = "";
+            $scope.country = "";
+            $scope.city = "";
+            $scope.state = "";
+            $scope.address = "";
+            for(var i = 0; i < $scope.addressDetails.address_components.length; i++) {
+                var type = $scope.addressDetails.address_components[i].types[0];
+                if(type == "postal_code") {
+                    $scope.zip = $scope.addressDetails.address_components[i].short_name;
+                } else if (type == "country") {
+                    $scope.country = $scope.addressDetails.address_components[i].short_name;
+                } else if (type == "locality") {
+                    $scope.city = $scope.addressDetails.address_components[i].short_name;
+                } else if (type == "administrative_area_level_1") {
+                    $scope.state = $scope.addressDetails.address_components[i].short_name;
+                } else if (type == "route") {
+                    $scope.address = $scope.addressDetails.address_components[i].short_name;
+                }
+            }
+        };
+        */
 	}
 ]);
 
@@ -214,6 +265,14 @@ app.controller('PostsCtrl', [
             return $scope.post.sprinklerZone[index].status == "ON";
         };
         
+        $scope.anyZoneRunning = function (index) {
+            for(var i = 0; i < $scope.post.sprinklerZone.length; i++) {
+                if( $scope.post.sprinklerZone[i].status == "ON" ) {
+                    return true;
+                }
+            }
+        };
+        
         $scope.deletePost = function (post) {
             posts.delete(post);
         };
@@ -226,8 +285,20 @@ app.controller('PostsCtrl', [
             posts.updatePost( $scope.post);
         };
         
-        $scope.percent = [];
-        $scope.percent.length = $scope.post.sprinklerZone.length;
+        $scope.percent = (function() {
+            var Arr = [];
+            for(var i = 0; i < $scope.post.sprinklerZone.length; i++) {
+                Arr[i] = 0;
+            }
+            return Arr;
+        } ());
+        
+        $scope.pieChartOptions = {
+            animate:{
+                duration:0,
+                enabled:false
+            }
+        };
         
         /*
         $scope.options = {
@@ -268,10 +339,11 @@ app.controller('PostsCtrl', [
                     var currentTms = currentTime.getTime();
                     var startTms = lastDate.getTime();
                     var durationCurr = scope.post.sprinklerZone[index].duration*60;
+                    scope.percent[index] = 100*timer/durationCurr;
                     
                     var timer =parseInt(durationCurr,10) - (currentTms - startTms)/1000;
                     
-                    scope.intervals[index] = $interval(function(index, timer) { return function () {
+                    scope.intervals[index] = $interval(function(index, timer, durationCurr) { return function () {
                         
                         var minutes = parseInt(timer / 60, 10);
                         var seconds = parseInt(timer % 60, 10);
@@ -292,7 +364,9 @@ app.controller('PostsCtrl', [
                             });
                             $interval.cancel(scope.intervals[index]);
                         }
-                    }}(index, timer), 1000,1200,true);
+                    }}(index, timer, durationCurr), 1000,1200,true);
+                } else {
+                    scope.percent[index] = 0;
                 }
             }
         },true);

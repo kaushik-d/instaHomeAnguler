@@ -16,11 +16,13 @@ body {
 }
 
 .panel-transparent .panel-heading{
-    background: rgba(122, 130, 136, 0.2)!important;
+    background: rgba(122, 130, 136, 0.9)!important;
+    color: white;
 }
 
 .panel-transparent .panel-body{
-    background: rgba(46, 51, 56, 0.1)!important;
+    background: rgba(46, 51, 56, 0.4)!important;
+    color: white;
 }
 
 .col-transparent {
@@ -100,4 +102,60 @@ input:checked + .slider:before {
     display: inline-block;
     vertical-align: middle;
     float: none;
+}
+
+.percent {
+  display: inline-block;
+  line-height: 110px;
+  z-index: 2;
+}
+.percent:after {
+  /* content: '%'; */
+  margin-left: 0.1em;
+  font-size: .8em;
+}
+
+.percent,
+.label {
+    text-align: center;
+    color: white; /*#333;*/
+    font-weight: 100;
+    font-size: 1.2em;
+    margin-bottom: 0.3em;
+}
+
+.chart {
+  position: relative;
+  display: inline-block;
+  width: 110px;
+  height: 110px;
+  /* margin-top: 50px;
+  margin-bottom: 50px; */
+  text-align: center;
+}
+
+.chart canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.pad-adjust { 
+  padding-top:10px; 
+}
+
+.weather-col {
+  margin: 9px; 
+  text-align: center; 
+  border: 1px solid lightgray; 
+  border-radius: 5px;
+}
+
+.weather-col:hover {
+    color: yellow;
 }
