@@ -44,9 +44,12 @@
 <!-- ===================================== Add sprinkler page =========================== -->
 
     <script type="text/ng-template" id="/home.html">
-        <div class="page-header">
-            <h1>Home</h1>
+        <div class="page-header" ng-show="isLoggedIn()">
+            <h3>Home</h3>
         </div>
+        <ol class="breadcrumb" ng-show="isLoggedIn()"> 
+          <li class="active">Home</li>
+        </ol>
         <div ng-show="isLoggedIn()" ng-repeat="post in posts">
             <div class="panel panel-default panel-transparent">
                 <div class="panel-heading clearfix">
@@ -106,8 +109,10 @@
                 </div>
             </div>
         </div>
-
+        <!--
         <div class="panel panel-default panel-transparent" ng-show="showAddPost()">
+        -->
+        <div class="panel panel-default panel-transparent" ng-show="isLoggedIn()">
             <div class="panel-heading">
                 <h3 class="panel-title">Add location for the sprinkler</h3>
             </div>
@@ -149,32 +154,36 @@
                         </div>
                     </div>
                 </form> 
+                </div>
             </div>
         </div>
         
-        <div ng-hide="isLoggedIn()">
-            <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a></h3>
+        <div class="panel panel-default panel-transparent"  ng-hide="isLoggedIn()">
+            <div class="panel-heading clearfix">
+                <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a></h3>
+            </div>
         </div>
+        
     </script>
     
 <!-- ===================================== Add zone page =========================== -->
 
     <script type="text/ng-template" id="/post.html">
-        <div class="page-header">
-            <h3> {{post.sprinklerZone.length }} zones </h3>
+        <div class="page-header" ng-show="isLoggedIn()">
+            <h3> {{post.deviceZones.length }} zones </h3>
         </div>
-        <ol class="breadcrumb">
+        <ol class="breadcrumb" ng-show="isLoggedIn()"> 
           <li><a href="/#/home">Home</a></li>
           <li class="active">Zones</a></li>
         </ol>
         <form ng-submit="updatePost()">
-        <div class="panel panel-default  panel-transparent"  ng-show="anyZoneRunning()">
+        <div class="panel panel-default  panel-transparent"  ng-show="anyZoneRunning() && isLoggedIn()">
             <div class="panel-heading clearfix">
                 <h3 class="panel-title pull-left">Zones running</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-sm-4"  ng-repeat="zone in post.sprinklerZone" ng-if="isOn($index)">
+                    <div class="col-sm-4"  ng-repeat="zone in post.deviceZones" ng-if="isOn($index)">
                         <div style="margin-left: 35px" class="lavel">Zone# {{$index+1}}</div>
                         <span easypiechart options="pieChartOptions" percent="percent[$index]" class="percent chart">
                             <span ng-bind="timeRemaining[$index]"></span>
@@ -183,7 +192,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-show="isLoggedIn()"> 
             <div class="panel-heading clearfix">
                 <h3 class="panel-title pull-left">Zones</h3>
                 <div class="btn-group  pull-right">
@@ -196,19 +205,19 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div class="row" ng-repeat="zone in post.sprinklerZone">
+                <div class="row" ng-repeat="zone in post.deviceZones">
                     <div class="col-sm-5">
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon2">{{$index+1}}</span>
-                            <input class="form-control" placeholder={{zone.duration}} ng-model=post.sprinklerZone[$index].duration></input>
+                            <input class="form-control" placeholder={{zone.duration}} ng-model=post.deviceZones[$index].duration></input>
                             <span class="input-group-addon" id="basic-addon2"> min </span>
-                            <!-- <input class="form-control" placeholder={{zone.status}} ng-model=post.sprinklerZone[$index].status></input> -->
+                            <!-- <input class="form-control" placeholder={{zone.status}} ng-model=post.deviceZones[$index].status></input> -->
                         </div>
                     </div>
                     <div class="col-sm-5">
                         <span style="vertical-align:top" ng-class="{'textOn' : !isOn($index), 'textOff' : isOn($index)}">AUTO</span>
                         <label class="switch">
-                            <input type="checkbox" ng-model=post.sprinklerZone[$index].status ng-true-value="'ON'"  
+                            <input type="checkbox" ng-model=post.deviceZones[$index].status ng-true-value="'ON'"  
                                 ng-false-value="'AUTO'" ng-Checked="isOn($index)" ng-Change="handleStatusChange($index)">
                             <div class="slider round"></div>
                         </label>
@@ -226,14 +235,14 @@
 <!-- ===================================== Schedule page =========================== -->
     
     <script type="text/ng-template" id="/schedule.html">
-        <div class="page-header">
+        <div class="page-header" ng-show="isLoggedIn()">
             <h3> Schedule</h3>
         </div>
-        <ol class="breadcrumb">
+        <ol class="breadcrumb" ng-show="isLoggedIn()">
           <li><a href="/#/home">Home</a></li>
           <li class="active">Schedule</a></li>
         </ol>
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-show="isLoggedIn()">
             <div class="panel-heading">
                 <h3 class="panel-title">Sprinkler runs on</h3>
             </div>
@@ -253,7 +262,7 @@
         </div>
         
         <form ng-submit="updatePost()">
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-show="isLoggedIn()">
             <div class="panel-heading clearfix">
                 <h3 class="panel-title pull-left">Sprinkler starts</h3>
                 <div class="btn-group  pull-right">

@@ -39,7 +39,7 @@ var PostSchema = new mongoose.Schema({
         }
     }],
     
-    sprinklerZone: [{
+    deviceZones: [{
         duration: {
             type: Number,
             default: 0,
@@ -55,26 +55,26 @@ var PostSchema = new mongoose.Schema({
 });
 
 PostSchema.methods.setStatusToAuto  = function(i,callback) {
-    this.sprinklerZone[i].status = "AUTO";
+    this.deviceZones[i].status = "AUTO";
     this.save(callback);
 };
 
 PostSchema.pre('findOneAndUpdate', function(next) {
     
     //console.log("Setting to");
-    //console.log(this._update.$set.sprinklerZone[0].status);
+    //console.log(this._update.$set.deviceZones[0].status);
     next();
 });
 
 PostSchema.post('findOneAndUpdate', function(doc) {
     
     //console.log(this);
-    //console.log(doc.sprinklerZone[0].status);
-    //console.log(this._update.$set.sprinklerZone[0].status);
+    //console.log(doc.deviceZones[0].status);
+    //console.log(this._update.$set.deviceZones[0].status);
     var i = 0;
-    for(i = 0; i < doc.sprinklerZone.length; i++) {
-        if(doc.sprinklerZone[i].status == "ON") {
-            var duration = doc.sprinklerZone[i].duration*60*1000;
+    for(i = 0; i < doc.deviceZones.length; i++) {
+        if(doc.deviceZones[i].status == "ON") {
+            var duration = doc.deviceZones[i].duration*60*1000;
             console.log("Setting time out for"+ duration); 
             setTimeout(function(i,doc) { return function(){
                 

@@ -252,22 +252,22 @@ app.controller('PostsCtrl', [
         };
         
         $scope.addZone = function () {
-            $scope.post.sprinklerZone.push({duration: '0', status: "AUTO"});
+            $scope.post.deviceZones.push({duration: '0', status: "AUTO"});
             posts.updatePost( $scope.post);
         };
         
         $scope.deleteZone = function (index) {
-            $scope.post.sprinklerZone.splice(index,1);
+            $scope.post.deviceZones.splice(index,1);
             posts.updatePost( $scope.post);
         };
 
         $scope.isOn = function (index) {
-            return $scope.post.sprinklerZone[index].status == "ON";
+            return $scope.post.deviceZones[index].status == "ON";
         };
         
         $scope.anyZoneRunning = function (index) {
-            for(var i = 0; i < $scope.post.sprinklerZone.length; i++) {
-                if( $scope.post.sprinklerZone[i].status == "ON" ) {
+            for(var i = 0; i < $scope.post.deviceZones.length; i++) {
+                if( $scope.post.deviceZones[i].status == "ON" ) {
                     return true;
                 }
             }
@@ -281,13 +281,13 @@ app.controller('PostsCtrl', [
             
             $scope.timeRemaining[index] = 0;
             var date = new Date();
-            $scope.post.sprinklerZone[index].lastRunStartTime = date.toISOString();
+            $scope.post.deviceZones[index].lastRunStartTime = date.toISOString();
             posts.updatePost( $scope.post);
         };
         
         $scope.percent = (function() {
             var Arr = [];
-            for(var i = 0; i < $scope.post.sprinklerZone.length; i++) {
+            for(var i = 0; i < $scope.post.deviceZones.length; i++) {
                 Arr[i] = 0;
             }
             return Arr;
@@ -315,9 +315,9 @@ app.controller('PostsCtrl', [
         
         $scope.intervals = [];
         
-        $scope.$watch('post.sprinklerZone', function(newsprinklerZone, oldsprinklerZone, scope) {
+        $scope.$watch('post.deviceZones', function(newdeviceZones, olddeviceZones, scope) {
             
-            //if(angular.equals(newsprinklerZone,oldsprinklerZone)) {
+            //if(angular.equals(newdeviceZones,olddeviceZones)) {
             //    return;
             //}
             
@@ -326,19 +326,19 @@ app.controller('PostsCtrl', [
             }
             scope.intervals.length = 0;
             
-            for( var index = 0; index < scope.post.sprinklerZone.length; index++)
+            for( var index = 0; index < scope.post.deviceZones.length; index++)
             {
-                var currentStatus = scope.post.sprinklerZone[index].status;
+                var currentStatus = scope.post.deviceZones[index].status;
             
                 if(currentStatus == "ON") {
                 
-                    var lastRunStartTime = scope.post.sprinklerZone[index].lastRunStartTime;
+                    var lastRunStartTime = scope.post.deviceZones[index].lastRunStartTime;
                     var lastDate = new Date(lastRunStartTime);
                     var currentTime = new Date();
                     
                     var currentTms = currentTime.getTime();
                     var startTms = lastDate.getTime();
-                    var durationCurr = scope.post.sprinklerZone[index].duration*60;
+                    var durationCurr = scope.post.deviceZones[index].duration*60;
                     scope.percent[index] = 100*timer/durationCurr;
                     
                     var timer =parseInt(durationCurr,10) - (currentTms - startTms)/1000;
