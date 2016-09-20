@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 
+var timeOutContainer = {};
+
 var PostSchema = new mongoose.Schema({
     
     address: String,
@@ -68,15 +70,17 @@ PostSchema.pre('findOneAndUpdate', function(next) {
 
 PostSchema.post('findOneAndUpdate', function(doc) {
     
-    //console.log(this);
-    //console.log(doc.deviceZones[0].status);
-    //console.log(this._update.$set.deviceZones[0].status);
     var i = 0;
+    
+    if(timeOutContainer[doc._id] === undefined) {
+        timeOutContainer[doc._id] = {};
+    }
+    
     for(i = 0; i < doc.deviceZones.length; i++) {
         if(doc.deviceZones[i].status == "ON") {
             var duration = doc.deviceZones[i].duration*60*1000;
             console.log("Setting time out for"+ duration); 
-            setTimeout(function(i,doc) { return function(){
+            timeOutContainer[doc._id][i] = setTimeout(function(i,doc) { return function(){
                 
                 console.log("Setting"+ i + "th status to AUTO"); 
                 doc.setStatusToAuto(i, function(err,doc) {
@@ -87,10 +91,24 @@ PostSchema.post('findOneAndUpdate', function(doc) {
                     }
                 });
             }}(i,doc), duration);
+            
+        } else if (doc.deviceZones[i].status == "AUTO") {
+            if(timeOutContainer[doc._id][i] !== undefined) {
+                clearTimeout(timeOutContainer[doc._id][i]);
+                console.log("cancelling timeout" + timeOutContainer[doc._id][i]);
+                delete timeOutContainer[doc._id][i];
+            }
         }
     }
+    
+    //if (Object.keys(timeOutContainer[doc._id]).length === 0 && 
+    //    timeOutContainer[doc._id].constructor === Object) {
+    //        //empty object
+    //        delete timeOutContainer[doc._id];
+    //    }
+    
     //setTimeout(function(){ console.log("Hello"); }, 3000);
-    //console.log("timeout set");
+   // console.log("timeout set");
 });
 
 mongoose.model('Post', PostSchema);
