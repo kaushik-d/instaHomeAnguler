@@ -15,7 +15,7 @@ require('./services/scheduledServices.js');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-mongoose.connect('mongodb://'+ process.env.IP + '/news');
+mongoose.connect(process.env.MONGOLAB_URI || ('mongodb://'+ process.env.IP + '/news'));
 var app = express();
 
 // view engine setup
