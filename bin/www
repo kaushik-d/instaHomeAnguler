@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+console.log('Hello I am 6');
 
 var app = require('../app');
 var debug = require('debug')('instahome:server');
@@ -11,6 +12,7 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
+console.log('Hello I am 15');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
@@ -18,6 +20,7 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
+console.log('Hello I am 23');
 
 var server = http.createServer(app);
 
@@ -43,6 +46,7 @@ function normalizePort(val) {
 
   if (port >= 0) {
     // port number
+    console.log('Hello I am 49');
     return port;
   }
 
@@ -90,4 +94,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log('Hello I am 97');
 }
