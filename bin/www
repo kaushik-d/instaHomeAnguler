@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 console.log('Hello I am 6');
-console.log('Mongo URI' + process.env.MONGOLAB_URI);
+console.log('Mongo URI' + process.env.MONGODB_URI);
 
 var app = require('../app');
 var debug = require('debug')('instahome:server');
