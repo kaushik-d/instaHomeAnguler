@@ -401,9 +401,15 @@ app.controller('ScheduleCtrl', [
         $scope.isLoggedIn = auth.isLoggedIn;
         
         $scope.selectTime = function(index) {
-            var hr = parseInt($scope.selectedTimes[index].getHours(),10);
+            
+            var selectedDate = $scope.selectedTimes[index];
+            var utcdate = new Date(selectedDate.getTime() + selectedDate.getTimezoneOffset()*60000);
+            
+            var hr = parseInt(utcdate.getHours(),10);
+            var min = parseInt(utcdate.getMinutes(),10)
+            
             $scope.post.startTime[index].startHr =  hr > 12 ? hr - 12 : hr ;
-            $scope.post.startTime[index].startMin = parseInt($scope.selectedTimes[index].getMinutes(),10);
+            $scope.post.startTime[index].startMin = min;
             $scope.post.startTime[index].dayTime =  hr > 12 ? "PM" : "AM";
         };
         
